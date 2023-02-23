@@ -21,7 +21,7 @@ based simulator is included for quick prototyping.
 1. Install Python 3.7
 2. Clone this repo
     ```
-    git clone https://github.com/hai-h-nguyen/pomdp_block_picking
+    git clone https://github.com/hai-h-nguyen/pomdp_robot_domains
     cd helping_hands_rl_envs
     ```
 3. Install dependencies
