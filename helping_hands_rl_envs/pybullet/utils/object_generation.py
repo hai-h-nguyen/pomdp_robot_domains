@@ -78,8 +78,8 @@ def generateBottle(pos, rot, scale):
 def generateBox(pos, rot, scale):
   return Box(pos, rot, scale)
 
-def generateFlatBlock(pos, rot, scale):
-  return FlatBlock(pos, rot, scale)
+def generateFlatBlock(pos, rot, scale, color='red'):
+  return FlatBlock(pos, rot, scale, color)
 
 def generateRandomHouseHoldObj200(pos, rot, scale, index):
   return RandomHouseHoldObject200(pos, rot, scale, index)

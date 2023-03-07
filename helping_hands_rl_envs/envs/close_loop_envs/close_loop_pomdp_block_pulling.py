@@ -4,51 +4,51 @@ import numpy as np
 from helping_hands_rl_envs.pybullet.utils import constants
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_env import CloseLoopEnv
 from helping_hands_rl_envs.pybullet.utils import transformations
-from helping_hands_rl_envs.planners.close_loop_pomdp_block_picking_planner import CloseLoopPomdpBlockPickingPlanner
-from helping_hands_rl_envs.pybullet.equipments.tray import Tray
+from helping_hands_rl_envs.planners.close_loop_pomdp_block_pulling_planner import CloseLoopPomdpBlockPullingPlanner
+from helping_hands_rl_envs.pybullet.utils.constants import NoValidPositionException
 
-class CloseLoopPomdpBlockPickingEnv(CloseLoopEnv):
+class CloseLoopPomdpBlockPullingEnv(CloseLoopEnv):
   def __init__(self, config):
+    if 'object_scale_range' not in config:
+      config['object_scale_range'] = [0.8, 0.8]
     super().__init__(config)
 
   def reset(self, target_obj_idx, noise=False):
-    self.target_obj_idx = target_obj_idx
-    self.resetPybulletWorkspace()
-    self.robot.moveTo([self.workspace[0].mean(), self.workspace[1].mean(), 0.2], transformations.quaternion_from_euler(0, 0, 0))
-    self.robot.openGripper()
-
-    if noise:
-      [noise_x1, noise_y1, noise_x2, noise_y2] = np.random.uniform(-0.01, 0.01, 4)
-      [noise_yaw_1, noise_yaw_2] = np.random.uniform(-0.15, 0.15, 2)
-    else:
-      noise_x1 = noise_x2 = noise_y1 = noise_y2 = 0
-      noise_yaw_1 = noise_yaw_2 = 0
-
-    # rot_1 = [transformations.quaternion_from_euler(0.0, 0.0, noise_yaw_1)]
-    # rot_2 = [transformations.quaternion_from_euler(0.0, 0.0, noise_yaw_2)]
-
-    if target_obj_idx == 0:
-      self._generateShapes(constants.CUBE, 1, cube_color='red', random_orientation=self.random_orientation)
-      self._generateShapes(constants.CUBE, 1, cube_color='blue', random_orientation=self.random_orientation)
-    elif (target_obj_idx == 1):
-      self._generateShapes(constants.CUBE, 1, cube_color='blue', random_orientation=self.random_orientation)
-      self._generateShapes(constants.CUBE, 1, cube_color='red', random_orientation=self.random_orientation)
-
+    while True:
+      self.resetPybulletWorkspace()
+      self.robot.moveTo([self.workspace[0].mean(), self.workspace[1].mean(), 0.2], transformations.quaternion_from_euler(0, 0, 0))
+      try:
+        if not self.random_orientation:
+          padding = self._getDefaultBoarderPadding(constants.FLAT_BLOCK)
+          min_distance = self._getDefaultMinDistance(constants.FLAT_BLOCK)
+          x = np.random.random() * (self.workspace_size - padding) + self.workspace[0][0] + padding/2
+          while True:
+            y1 = np.random.random() * (self.workspace_size - padding) + self.workspace[1][0] + padding/2
+            y2 = np.random.random() * (self.workspace_size - padding) + self.workspace[1][0] + padding/2
+            if max(y1, y2) - min(y1, y2) > min_distance:
+              break
+          self._generateShapes(constants.FLAT_BLOCK, 1, pos=[[x, y1, 0.025]], random_orientation=True, cube_color='blue')
+          self._generateShapes(constants.FLAT_BLOCK, 1, pos=[[x, y2, 0.025]], random_orientation=True)
+        else:
+          self._generateShapes(constants.FLAT_BLOCK, 2, random_orientation=self.random_orientation)
+      except NoValidPositionException as e:
+        continue
+      else:
+        break
     return self._getObservation()
 
   def _getValidOrientation(self, random_orientation):
     if random_orientation:
-      orientation = pb.getQuaternionFromEuler([0., 0., np.pi/2 * (np.random.random_sample() - 0.5)])
+      orientation = pb.getQuaternionFromEuler([0., 0., np.pi * (np.random.random_sample() - 0.5)])
     else:
       orientation = pb.getQuaternionFromEuler([0., 0., 0.])
     return orientation
 
   def _checkTermination(self):
-    gripper_z = self.robot._getEndEffectorPosition()[-1]
-    return self.robot.holding_obj == self.objects[self.target_obj_idx] and gripper_z > 0.08
+    return self.objects[0].isTouching(self.objects[1])
 
-def createCloseLoopPomdpBlockPickingEnv(config):
-  return CloseLoopPomdpBlockPickingEnv(config)
+def createCloseLoopPomdpBlockPullingEnv(config):
+  return CloseLoopPomdpBlockPullingEnv(config)
 
 if __name__ == '__main__':
   import matplotlib.pyplot as plt
@@ -59,10 +59,10 @@ if __name__ == '__main__':
                 'seed': 2, 'action_sequence': 'pxyzr', 'num_objects': 1, 'random_orientation': False,
                 'reward_type': 'step_left', 'simulate_grasp': True, 'perfect_grasp': False, 'robot': 'kuka',
                 'object_init_space_check': 'point', 'physics_mode': 'fast', 'object_scale_range': (1, 1), 'hard_reset_freq': 1000}
-  planner_config = {'random_orientation': False, 'dpos': 0.05, 'drot': np.pi/8}
+  planner_config = {'random_orientation': False}
   env_config['seed'] = 1
-  env = CloseLoopBlockPickingEnv(env_config)
-  planner = CloseLoopPomdpBlockPickingPlanner(env, planner_config)
+  env = CloseLoopPomdpBlockPullingEnv(env_config)
+  planner = CloseLoopPomdpBlockPullingPlanner(env, planner_config)
   s, in_hand, obs = env.reset()
   # while True:
   #   current_pos = env.robot._getEndEffectorPosition()

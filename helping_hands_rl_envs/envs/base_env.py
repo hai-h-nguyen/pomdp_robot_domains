@@ -511,6 +511,8 @@ class BaseEnv:
         scale = npr.choice(np.arange(self.block_scale_range[0], self.block_scale_range[1]+0.01, 0.02))
 
       if shape_type == constants.CUBE:
+        # Make sure all blocks have the same height
+        position[2] = 0.025
         if cube_color == 'blue':
           handle = pb_obj_generation.generateCube(position, orientation, scale, color='blue')
         else:
@@ -546,7 +548,7 @@ class BaseEnv:
       elif shape_type == constants.SWAB:
         handle = pb_obj_generation.generateSwab(position, orientation, scale, model_id=None)
       elif shape_type == constants.FLAT_BLOCK:
-        handle = pb_obj_generation.generateFlatBlock(position, orientation, scale)
+        handle = pb_obj_generation.generateFlatBlock(position, orientation, scale, color=cube_color)
       elif shape_type == constants.RANDOM_HOUSEHOLD200:
         handle = pb_obj_generation.generateRandomHouseHoldObj200(position, orientation, scale, model_id)
       elif shape_type == constants.GRASP_NET_OBJ:

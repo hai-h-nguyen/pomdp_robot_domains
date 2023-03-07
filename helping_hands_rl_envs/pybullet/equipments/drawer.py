@@ -11,16 +11,20 @@ from helping_hands_rl_envs.pybullet.objects.pybullet_object import PybulletObjec
 from typing import List
 
 class Drawer:
-  def __init__(self, model_id=1):
+  def __init__(self, model_id=1, locked=False):
     assert model_id in [1, 2]
     self.model_id = model_id
     self.id = None
     self.handle = None
     self.object_init_link_id = 5
     self.cids = []
+    self.locked = locked
 
   def initialize(self, pos=(0,0,0), rot=(0,0,0,1), scale=0.5):
-    drawer_urdf_filepath = os.path.join(constants.URDF_PATH, 'drawer{}.urdf'.format(self.model_id))
+    if self.locked:
+      drawer_urdf_filepath = os.path.join(constants.URDF_PATH, 'drawer_locked.urdf')
+    else:
+      drawer_urdf_filepath = os.path.join(constants.URDF_PATH, 'drawer{}.urdf'.format(self.model_id))
     self.id = pb.loadURDF(drawer_urdf_filepath, pos, rot, globalScaling=scale)
     self.handle = DrawerHandle(self.id)
 
@@ -62,7 +66,7 @@ class Drawer:
     pass
 
   def isDrawerOpen(self):
-    return pb.getJointState(self.id, 1)[0] > 0.15
+    return pb.getJointState(self.id, 1)[0] > 0.05
 
   def isDrawerClosed(self):
     return pb.getJointState(self.id, 1)[0] < 0.02

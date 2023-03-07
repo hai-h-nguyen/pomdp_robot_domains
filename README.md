@@ -21,7 +21,7 @@ based simulator is included for quick prototyping.
 1. Install Python 3.7
 2. Clone this repo
     ```
-    git clone https://github.com/hai-h-nguyen/pomdp_robot_domains
+    git clone https://github.com/ColinKohler/helping_hands_rl_envs.git
     cd helping_hands_rl_envs
     ```
 3. Install dependencies
@@ -30,7 +30,7 @@ based simulator is included for quick prototyping.
     ```
 4. Install this package
     ```
-    pip install -e .
+    pip install .
     ```
 5. Run the block stacking demo
     ```python

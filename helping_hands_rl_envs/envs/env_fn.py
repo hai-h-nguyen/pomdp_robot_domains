@@ -57,15 +57,19 @@ from helping_hands_rl_envs.envs.bumpy_envs.bumpy_house_building_4_env import cre
 
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_block_picking import createCloseLoopBlockPickingEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_pomdp_block_picking import createCloseLoopPomdpBlockPickingEnv
+from helping_hands_rl_envs.envs.close_loop_envs.close_loop_pomdp_block_pulling import createCloseLoopPomdpBlockPullingEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_block_reaching import createCloseLoopBlockReachingEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_block_stacking import createCloseLoopBlockStackingEnv
+from helping_hands_rl_envs.envs.close_loop_envs.close_loop_pomdp_block_stacking import createCloseLoopPomdpBlockStackingEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_block_pulling import createCloseLoopBlockPullingEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_house_building_1 import createCloseLoopHouseBuilding1Env
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_block_picking_corner import createCloseLoopBlockPickingCornerEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_drawer_opening import createCloseLoopDrawerOpeningEnv
+from helping_hands_rl_envs.envs.close_loop_envs.close_loop_pomdp_drawer_opening import createCloseLoopPomdpDrawerOpeningEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_household_picking import createCloseLoopHouseholdPickingEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_household_picking_cluttered import createCloseLoopHouseholdPickingClutteredEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_block_pushing import createCloseLoopBlockPushingEnv
+from helping_hands_rl_envs.envs.close_loop_envs.close_loop_pomdp_block_pushing import createCloseLoopPomdpBlockPushingEnv
 from helping_hands_rl_envs.envs.close_loop_envs.close_loop_block_in_bowl import createCloseLoopBlockInBowlEnv
 
 CREATE_ENV_FNS = {
@@ -121,14 +125,18 @@ CREATE_ENV_FNS = {
   'covid_test': createCovidTestEnv,
   'close_loop_block_picking': createCloseLoopBlockPickingEnv,
   'close_loop_pomdp_block_picking': createCloseLoopPomdpBlockPickingEnv,
+  'close_loop_pomdp_block_pulling': createCloseLoopPomdpBlockPullingEnv,
   'close_loop_block_reaching': createCloseLoopBlockReachingEnv,
   'close_loop_block_stacking': createCloseLoopBlockStackingEnv,
+  'close_loop_pomdp_block_stacking': createCloseLoopPomdpBlockStackingEnv,
   'close_loop_block_pulling': createCloseLoopBlockPullingEnv,
   'close_loop_house_building_1': createCloseLoopHouseBuilding1Env,
   'close_loop_block_picking_corner': createCloseLoopBlockPickingCornerEnv,
   'close_loop_drawer_opening': createCloseLoopDrawerOpeningEnv,
+  'close_loop_pomdp_drawer_opening': createCloseLoopPomdpDrawerOpeningEnv,
   'close_loop_household_picking': createCloseLoopHouseholdPickingEnv,
   'close_loop_clutter_picking': createCloseLoopHouseholdPickingClutteredEnv,
   'close_loop_block_pushing': createCloseLoopBlockPushingEnv,
+  'close_loop_pomdp_block_pushing': createCloseLoopPomdpBlockPushingEnv,
   'close_loop_block_in_bowl': createCloseLoopBlockInBowlEnv,
 }

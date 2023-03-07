@@ -673,6 +673,12 @@ class SingleRunner(object):
     '''
     return self.env.getObjectPoses()
 
+  def getEnvPenalty(self):
+    '''
+
+    '''
+    return self.env.getEnvPenalty()
+
   def getNextAction(self, target_obj_idx):
     '''
 
