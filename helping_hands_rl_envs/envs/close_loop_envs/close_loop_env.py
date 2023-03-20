@@ -216,14 +216,14 @@ class CloseLoopEnv(BaseEnv):
       self.heightmap = self._getHeightmap()
       gripper_img = self.getGripperImg()
       heightmap = self.heightmap
-      if self.view_type.find('height') > -1:
-        gripper_pos = self.robot._getEndEffectorPosition()
-        heightmap[gripper_img == 1] = gripper_pos[2]
-      else:
-        heightmap[gripper_img == 1] = 0
+      # if self.view_type.find('height') > -1:
+      #   gripper_pos = self.robot._getEndEffectorPosition()
+      #   heightmap[gripper_img == 1] = gripper_pos[2]
+      # else:
+      #   heightmap[gripper_img == 1] = 0
       heightmap = heightmap.reshape([1, self.heightmap_size, self.heightmap_size])
       # gripper_img = gripper_img.reshape([1, self.heightmap_size, self.heightmap_size])
-      return self._isHolding(), None, heightmap
+      return self._isHolding(), self._getSegMap(), heightmap
     else:
       obs = self._getVecObservation()
       return self._isHolding(), None, obs
@@ -395,6 +395,25 @@ class CloseLoopEnv(BaseEnv):
       else:
         depth = heightmap
       return depth
+    else:
+      raise NotImplementedError
+
+  def _getSegMap(self, gripper_pos=None, gripper_rz=None):
+    gripper_z_offset = 0.04 # panda
+    if self.robot_type == 'kuka':
+      gripper_z_offset = 0.06
+    elif self.robot_type == 'ur5':
+      gripper_z_offset = 0.06
+    if gripper_pos is None:
+      gripper_pos = self.robot._getEndEffectorPosition()
+    if gripper_rz is None:
+      gripper_rz = transformations.euler_from_quaternion(self.robot._getEndEffectorRotation())[2]
+    if self.view_type in ['camera_center_xyz', 'camera_center_xyz_height']:
+      gripper_pos[2] += gripper_z_offset
+      target_pos = [gripper_pos[0], gripper_pos[1], 0]
+      cam_up_vector = [-1, 0, 0]
+      self.sensor.setCamMatrix(gripper_pos, cam_up_vector, target_pos)
+      return self.sensor.getSegmask(self.heightmap_size)
     else:
       raise NotImplementedError
 
