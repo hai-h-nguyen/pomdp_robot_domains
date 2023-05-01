@@ -65,8 +65,8 @@ class Drawer:
       pb.stepSimulation()
     pass
 
-  def isDrawerOpen(self):
-    return pb.getJointState(self.id, 1)[0] > 0.05
+  def isDrawerOpen(self, threshold=0.05):
+    return pb.getJointState(self.id, 1)[0] > threshold
 
   def isDrawerClosed(self):
     return pb.getJointState(self.id, 1)[0] < 0.02
